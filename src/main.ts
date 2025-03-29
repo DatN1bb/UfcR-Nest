@@ -26,6 +26,9 @@ async function bootstrap() {
     .setVersion('1.0.0')
     .build()
 
+  const document = SwaggerModule.createDocument(app, config)
+  SwaggerModule.setup('/', app, document)
+
   const PORT = process.env.PORT || 8080
   await app.listen(PORT)
 
