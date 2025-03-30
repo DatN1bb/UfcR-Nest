@@ -50,6 +50,15 @@ export class AuthService {
     return user
   }
 
+  async generateJwt(user: User): Promise<string> {
+    return this.jwtService.signAsync({ sub: user.id, name: user.email })
+  }
+
+  async user(cookie: string): Promise<User> {
+    const data = await this.jwtService.verifyAsync(cookie)
+    return this.usersService.FindById(data['id'])
+  }
+
   async login(userFromRequest: User, res: Response): Promise<void> {
     const { password, ...user } = await this.usersService.FindById(userFromRequest.id, ['role'])
     const accessToken = await this.generateToken(user.id, user.email, JwtType.ACCESS_TOKEN)

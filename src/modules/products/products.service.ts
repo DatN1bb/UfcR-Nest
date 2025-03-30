@@ -1,11 +1,8 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Permission } from 'entities/permission.entity'
 import { Product } from 'entities/product.entity '
-import { Role } from 'entities/role.entity'
 import logging from 'library/Logging'
 import { AbstractService } from 'modules/common/abstract.service'
-import { CreateUpdateRoleDto } from 'modules/roles/dto/create-update-role.dto'
 import { Repository } from 'typeorm'
 import { CreateUpdateProductDto } from './dto/create-update-product.dto'
 

@@ -16,9 +16,9 @@
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
-    "@nestjs/common": "^9.0.0",
+    "@nestjs/common": "^11.0.12",
     "@nestjs/config": "^2.2.0",
-    "@nestjs/core": "^9.0.0",
+    "@nestjs/core": "^11.0.12",
     "@nestjs/jwt": "^9.0.0",
     "@nestjs/passport": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
