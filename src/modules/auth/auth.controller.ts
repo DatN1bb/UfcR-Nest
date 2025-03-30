@@ -18,9 +18,6 @@ import { RegisterUserDto } from './dto/reigster-user.dto'
 import { LocalAuthGuard } from './guards/local-auth.guard'
 import { Request, Response } from 'express'
 import { RequestWithUser } from 'interfaces/auth.interface'
-import { PassThrough } from 'stream'
-import { JwtAuthGuard } from './guards/jwt.guard'
-import { UserData } from 'interfaces/user.interface'
 
 @Controller('auth')
 @UseInterceptors(ClassSerializerInterceptor)

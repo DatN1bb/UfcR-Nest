@@ -1,19 +1,5 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Patch,
-  Post,
-  Query,
-} from '@nestjs/common'
-import { User } from 'entities/user.entity'
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common'
 import { PaginatedResult } from 'interfaces/paginated-result.interface'
-import { CreateUserDto } from 'modules/users/dto/create-user.dto'
 import { RolesService } from './roles.service'
 import { Role } from 'entities/role.entity'
 import { CreateUpdateRoleDto } from './dto/create-update-role.dto'

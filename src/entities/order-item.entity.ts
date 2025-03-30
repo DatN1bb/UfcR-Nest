@@ -1,6 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
 import { Base } from './base.entity'
-import { Exclude } from 'class-transformer'
 import { Order } from './order.entity'
 
 @Entity()

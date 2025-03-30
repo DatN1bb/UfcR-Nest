@@ -8,7 +8,6 @@ import logging from 'library/Logging'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { compareHash, hash } from 'utils/bcrypt'
 import { PostgresErrorCode } from 'helpers/postgresErrorCode.enum'
-import { object } from '@hapi/joi'
 
 @Injectable()
 export class UsersService extends AbstractService {

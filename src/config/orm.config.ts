@@ -13,7 +13,7 @@ export const ORMConfig = async (configService: ConfigService): Promise<Connectio
   password: configService.get('DATABASE_PWD'),
   database: configService.get('DATABASE_NAME'),
   entities: ['dist/**/*.entity.ts'],
-  synchronize: true, //only in development
+  synchronize: false, //only in development
   ssl: true,
   extra: {
     ssl: {
