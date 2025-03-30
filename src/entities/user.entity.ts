@@ -1,6 +1,7 @@
-import { Column, ManyToOne, JoinColumn } from 'typeorm'
-import { Base } from './base.entity'
 import { Exclude } from 'class-transformer'
+import { Column, JoinColumn, ManyToOne } from 'typeorm'
+
+import { Base } from './base.entity'
 import { Role } from './role.entity'
 
 export class User extends Base {
@@ -19,6 +20,8 @@ export class User extends Base {
   @Column({ nullable: true })
   @Exclude()
   password: string
+
+  refresh_token?: string
 
   @ManyToOne(() => Role, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'role_id' })

@@ -1,19 +1,18 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Order } from 'entities/order.entity'
-import { Product } from 'entities/product.entity '
+import { Response } from 'express'
 import { Parser } from 'json2csv'
 import { AbstractService } from 'modules/common/abstract.service'
 import { Repository } from 'typeorm'
-import { Response } from 'express'
 
 @Injectable()
-export class OrdersService extends AbstractService {
-  constructor(@InjectRepository(Order) private readonly ordersRepository: Repository<Product>) {
+export class OrdersService extends AbstractService<Order> {
+  constructor(@InjectRepository(Order) private readonly ordersRepository: Repository<Order>) {
     super(ordersRepository)
   }
 
-  async export(response: Response): Promise<any> {
+  async export(response: Response): Promise<void> {
     const parser = new Parser({
       fields: ['ID', 'Name', 'Email', 'Product Title', 'Price', 'Quantity'],
     })
@@ -44,7 +43,7 @@ export class OrdersService extends AbstractService {
     })
     const csv = parser.parse(json)
     response.setHeader('Content-Type', 'text/csv')
-    response.attachment('orders.cvs')
+    response.attachment('orders.csv')
     response.send(csv)
   }
 

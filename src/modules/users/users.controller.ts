@@ -14,16 +14,17 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common'
-import { UsersService } from './users.service'
-import { PaginatedResult } from 'interfaces/paginated-result.interface'
+import { FileInterceptor } from '@nestjs/platform-express'
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiTags } from '@nestjs/swagger'
+import { HasPermission } from 'decorators/has-permission.decorator'
 import { User } from 'entities/user.entity'
+import { isFIleExtensionSafe, removeFile, saveImageToStorage } from 'helpers/imageStorage'
+import { PaginatedResult } from 'interfaces/paginated-result.interface'
+import { join } from 'path'
+
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
-import { FileInterceptor } from '@nestjs/platform-express'
-import { isFIleExtensionSafe, removeFile, saveImageToStorage } from 'helpers/imageStorage'
-import { HasPermission } from 'decorators/has-permission.decorator'
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiTags } from '@nestjs/swagger'
-import { join } from 'path'
+import { UsersService } from './users.service'
 
 @ApiTags('users')
 @Controller('users')
@@ -36,7 +37,7 @@ export class UsersController {
   @Get()
   @HasPermission('users')
   @HttpCode(HttpStatus.OK)
-  async findAll(@Query('page') page: number): Promise<PaginatedResult> {
+  async findAll(@Query('page') page: number): Promise<PaginatedResult<User>> {
     return this.usersService.paginate(page, ['role'])
   }
 

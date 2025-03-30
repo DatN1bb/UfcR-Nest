@@ -1,13 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Permission } from 'entities/permission.entity'
+import logging from 'library/Logging'
 import { AbstractService } from 'modules/common/abstract.service'
 import { Repository } from 'typeorm'
+
 import { CreatePermissionDto } from './dto/create-permission.dto'
-import logging from 'library/Logging'
 
 @Injectable()
-export class PermissionsService extends AbstractService {
+export class PermissionsService extends AbstractService<Permission> {
   constructor(@InjectRepository(Permission) private readonly permissionsRepository: Repository<Permission>) {
     super(permissionsRepository)
   }

@@ -4,10 +4,11 @@ import { Product } from 'entities/product.entity '
 import logging from 'library/Logging'
 import { AbstractService } from 'modules/common/abstract.service'
 import { Repository } from 'typeorm'
+
 import { CreateUpdateProductDto } from './dto/create-update-product.dto'
 
 @Injectable()
-export class ProductsService extends AbstractService {
+export class ProductsService extends AbstractService<Product> {
   constructor(@InjectRepository(Product) private readonly productsRepository: Repository<Product>) {
     super(productsRepository)
   }

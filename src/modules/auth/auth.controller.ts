@@ -11,13 +11,14 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common'
-import { AuthService } from './auth.service'
 import { Public } from 'decorators/public.decorator'
 import { User } from 'entities/user.entity'
-import { RegisterUserDto } from './dto/reigster-user.dto'
-import { LocalAuthGuard } from './guards/local-auth.guard'
 import { Request, Response } from 'express'
 import { RequestWithUser } from 'interfaces/auth.interface'
+
+import { AuthService } from './auth.service'
+import { RegisterUserDto } from './dto/reigster-user.dto'
+import { LocalAuthGuard } from './guards/local-auth.guard'
 
 @Controller('auth')
 @UseInterceptors(ClassSerializerInterceptor)

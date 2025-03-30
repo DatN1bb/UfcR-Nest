@@ -1,7 +1,7 @@
 import {
   BadRequestException,
-  Injectable,
   ForbiddenException,
+  Injectable,
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common'
@@ -21,14 +21,14 @@ import { RegisterUserDto } from './dto/reigster-user.dto'
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
-    private jwtService: JwtService,
-    private configService: ConfigService,
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async validateUser(email: string, password: string): Promise<User> {
     Logging.info('Validating user...')
-    const user = await this.usersService.FindBy({ email: email })
+    const user = await this.usersService.FindBy({ email })
     if (!user) {
       throw new BadRequestException('Invalid credentials')
     }
@@ -42,12 +42,20 @@ export class AuthService {
 
   async register(registerUserDto: RegisterUserDto): Promise<User> {
     const hashedPassword = await hash(registerUserDto.password)
-    const user = await this.usersService.create({
-      role_id: null,
-      ...registerUserDto,
-      password: hashedPassword,
-    })
-    return user
+    try {
+      const user = await this.usersService.create({
+        role_id: null,
+        ...registerUserDto,
+        password: hashedPassword,
+      })
+      return user
+    } catch (error: unknown) {
+      Logging.error(error as string | object)
+      if (error instanceof Error && 'code' in error && error.code === PostgresErrorCode.UniqueViolation) {
+        throw new BadRequestException('User with that email already exists.')
+      }
+      throw new InternalServerErrorException('Something went wrong while registering the user.')
+    }
   }
 
   async generateJwt(user: User): Promise<string> {
@@ -55,12 +63,17 @@ export class AuthService {
   }
 
   async user(cookie: string): Promise<User> {
-    const data = await this.jwtService.verifyAsync(cookie)
-    return this.usersService.FindById(data['id'])
+    try {
+      const data = await this.jwtService.verifyAsync(cookie)
+      return this.usersService.FindById(data['id'])
+    } catch (error: unknown) {
+      Logging.error(error as string | object)
+      throw new UnauthorizedException('Invalid or expired token.')
+    }
   }
 
   async login(userFromRequest: User, res: Response): Promise<void> {
-    const { password, ...user } = await this.usersService.FindById(userFromRequest.id, ['role'])
+    const user = await this.usersService.FindById(userFromRequest.id, ['role']) // Remove 'password'
     const accessToken = await this.generateToken(user.id, user.email, JwtType.ACCESS_TOKEN)
     const accessTokenCookie = await this.generateCookie(accessToken, CookieType.ACCESS_TOKEN)
     const refreshToken = await this.generateToken(user.id, user.email, JwtType.REFRESH_TOKEN)
@@ -68,8 +81,8 @@ export class AuthService {
     try {
       await this.updateRtHash(user.id, refreshToken)
       res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie]).json({ ...user })
-    } catch (error) {
-      Logging.error(error)
+    } catch (error: unknown) {
+      Logging.error(error as string | object)
       throw new InternalServerErrorException('Something went wrong while setting cookies into response header.')
     }
   }
@@ -79,8 +92,8 @@ export class AuthService {
     await this.usersService.update(user.id, { refresh_token: null })
     try {
       res.setHeader('Set-Cookie', this.getCookiesForSignOut()).sendStatus(200)
-    } catch (error) {
-      Logging.error(error)
+    } catch (error: unknown) {
+      Logging.error(error as string | object)
       throw new InternalServerErrorException('Something went wrong while setting cookies into response header.')
     }
   }
@@ -88,15 +101,15 @@ export class AuthService {
   async refreshTokens(req: Request): Promise<User> {
     const user = await this.usersService.FindBy({ refresh_token: req.cookies.refresh_token }, ['role'])
     if (!user) {
-      throw new ForbiddenException()
+      throw new ForbiddenException('Invalid refresh token.')
     }
     try {
       await this.jwtService.verifyAsync(user.refresh_token, {
         secret: this.configService.get('JWT_REFRESH_SECRET'),
       })
-    } catch (error) {
-      Logging.error(error)
-      throw new UnauthorizedException('Something went wrong while refreshing tokens.')
+    } catch (error: unknown) {
+      Logging.error(error as string | object)
+      throw new UnauthorizedException('Invalid or expired refresh token.')
     }
 
     const token = await this.generateToken(user.id, user.email, JwtType.ACCESS_TOKEN)
@@ -104,8 +117,8 @@ export class AuthService {
 
     try {
       req.res.setHeader('Set-Cookie', cookie)
-    } catch (error) {
-      Logging.error(error)
+    } catch (error: unknown) {
+      Logging.error(error as string | object)
       throw new InternalServerErrorException('Something went wrong while setting cookies into response header.')
     }
     return user
@@ -114,13 +127,13 @@ export class AuthService {
   async updateRtHash(userId: string, rt: string): Promise<void> {
     try {
       await this.usersService.update(userId, { refresh_token: rt })
-    } catch (error) {
-      Logging.error(error)
-      throw new InternalServerErrorException('Spmething went wrong while updating user refresh token.')
+    } catch (error: unknown) {
+      Logging.error(error as string | object)
+      throw new InternalServerErrorException('Something went wrong while updating user refresh token.')
     }
   }
 
-  async getUserIfRefreshTokenMatches(refreshToken: string, userId: string): Promise<UserData> {
+  async getUserIfRefreshTokenMatches(refreshToken: string, userId: string): Promise<UserData | null> {
     const user = await this.usersService.FindById(userId)
     const isRefreshTokenMatching = await compareHash(refreshToken, user.refresh_token)
     if (isRefreshTokenMatching) {
@@ -129,6 +142,7 @@ export class AuthService {
         email: user.email,
       }
     }
+    return null
   }
 
   async generateToken(userId: string, email: string, type: JwtType): Promise<string> {
@@ -146,14 +160,11 @@ export class AuthService {
           })
           break
         default:
-          throw new BadRequestException('Access denies.')
+          throw new BadRequestException('Invalid token type.')
       }
       return token
-    } catch (error) {
-      Logging.error(error)
-      if (error?.code === PostgresErrorCode.UniqueViolation) {
-        throw new BadRequestException('User with that email already exists.')
-      }
+    } catch (error: unknown) {
+      Logging.error(error as string | object)
       throw new InternalServerErrorException('Something went wrong while generating a new token.')
     }
   }
@@ -173,11 +184,11 @@ export class AuthService {
           )}; SameSite=strict`
           break
         default:
-          throw new BadRequestException('Access denied.')
+          throw new BadRequestException('Invalid cookie type.')
       }
       return cookie
-    } catch (error) {
-      Logging.error(error)
+    } catch (error: unknown) {
+      Logging.error(error as string | object)
       throw new InternalServerErrorException('Something went wrong while generating a new cookie.')
     }
   }

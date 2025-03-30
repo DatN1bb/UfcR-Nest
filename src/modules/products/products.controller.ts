@@ -12,14 +12,15 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common'
+import { Controller } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { Product } from 'entities/product.entity '
 import { isFIleExtensionSafe, removeFile, saveImageToStorage } from 'helpers/imageStorage'
 import { PaginatedResult } from 'interfaces/paginated-result.interface'
 import { join } from 'path'
+
 import { CreateUpdateProductDto } from './dto/create-update-product.dto'
 import { ProductsService } from './products.service'
-import { Controller } from '@nestjs/common'
 
 @Controller('products')
 export class ProductsController {
@@ -27,7 +28,7 @@ export class ProductsController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  async findAll(@Query('page') page: number): Promise<PaginatedResult> {
+  async findAll(@Query('page') page: number): Promise<PaginatedResult<Product>> {
     return this.productsService.paginate(page)
   }
 

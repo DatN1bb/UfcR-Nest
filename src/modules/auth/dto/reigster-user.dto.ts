@@ -1,5 +1,5 @@
-import { IsEmail, IsNotEmpty, IsOptional, Matches } from 'class-validator'
-import { Match } from 'decorators/match.decorator'
+import { IsEmail, IsEmpty, IsNotEmpty, IsOptional, Matches } from 'class-validator'
+import { Match } from 'decorators/match.decorator' // Ensure the correct path to the Match decorator
 
 export class RegisterUserDto {
   @IsOptional()
@@ -13,13 +13,13 @@ export class RegisterUserDto {
   email: string
 
   @IsNotEmpty()
-  @Matches(/^(?=.*\d) [A-Za-z.\s_-]+[\w~@#$%^&*+=` | {} : ; ! . ?" ()[\]-]{6,}/, {
-    message:
-      'Password must have at least one number, lower or upper case letter and it has to be longer than 5 characters.',
+  @Matches(/^(?=.*\d)(?=.*[a-zA-Z]).{6,}$/, {
+    message: 'Password must have at least one number, one letter, and be longer than 5 characters.',
   })
-  password: string
+  @IsEmpty()
+  password?: string
 
   @IsNotEmpty()
-  @Match(RegisterUserDto, (field) => field.password, { message: 'Passwords do not match.' })
+  @Match(RegisterUserDto, (dto) => dto.password, { message: 'Passwords do not match.' })
   confirm_password: string
 }

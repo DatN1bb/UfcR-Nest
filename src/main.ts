@@ -1,10 +1,11 @@
-import { NestFactory } from '@nestjs/core'
-import { AppModule } from './modules/app.module'
 import { ValidationPipe } from '@nestjs/common'
-import cookieParser from 'cookie-parser'
-import logging from 'library/Logging'
+import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import cookieParser from 'cookie-parser'
 import express from 'express'
+import logging from 'library/Logging'
+
+import { AppModule } from './modules/app.module'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
