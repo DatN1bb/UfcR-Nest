@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
-import { User } from 'entities/user.entity'
+import { Uporabnik } from 'entities/user.entity'
 import { Request } from 'express'
 import { TokenPayload } from 'interfaces/auth.interface'
 import { UsersService } from 'modules/users/users.service'
@@ -19,7 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       secretOrKey: configService.get<string>('JWT_SECRET'),
     })
   }
-  async validate(payload: TokenPayload): Promise<User> {
+  async validate(payload: TokenPayload): Promise<Uporabnik> {
     return this.usersService.FindById(payload.sub)
   }
 }

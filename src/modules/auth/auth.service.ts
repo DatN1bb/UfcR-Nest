@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
-import { User } from 'entities/user.entity'
+import { Uporabnik } from 'entities/user.entity'
 import { Request, Response } from 'express'
 import { PostgresErrorCode } from 'helpers/postgresErrorCode.enum'
 import { CookieType, JwtType, TokenPayload } from 'interfaces/auth.interface'
@@ -26,7 +26,7 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async validateUser(email: string, password: string): Promise<User> {
+  async validateUser(email: string, password: string): Promise<Uporabnik> {
     Logging.info('Validating user...')
     const user = await this.usersService.FindBy({ email })
     if (!user) {
@@ -40,7 +40,7 @@ export class AuthService {
     return user
   }
 
-  async register(registerUserDto: RegisterUserDto): Promise<User> {
+  async register(registerUserDto: RegisterUserDto): Promise<Uporabnik> {
     const hashedPassword = await hash(registerUserDto.password)
     try {
       const user = await this.usersService.create({
@@ -58,11 +58,11 @@ export class AuthService {
     }
   }
 
-  async generateJwt(user: User): Promise<string> {
+  async generateJwt(user: Uporabnik): Promise<string> {
     return this.jwtService.signAsync({ sub: user.id, name: user.email })
   }
 
-  async user(cookie: string): Promise<User> {
+  async user(cookie: string): Promise<Uporabnik> {
     try {
       const data = await this.jwtService.verifyAsync(cookie)
       return this.usersService.FindById(data['id'])
@@ -72,7 +72,7 @@ export class AuthService {
     }
   }
 
-  async login(userFromRequest: User, res: Response): Promise<void> {
+  async login(userFromRequest: Uporabnik, res: Response): Promise<void> {
     const user = await this.usersService.FindById(userFromRequest.id, ['role']) // Remove 'password'
     const accessToken = await this.generateToken(user.id, user.email, JwtType.ACCESS_TOKEN)
     const accessTokenCookie = await this.generateCookie(accessToken, CookieType.ACCESS_TOKEN)
@@ -98,7 +98,7 @@ export class AuthService {
     }
   }
 
-  async refreshTokens(req: Request): Promise<User> {
+  async refreshTokens(req: Request): Promise<Uporabnik> {
     const user = await this.usersService.FindBy({ refresh_token: req.cookies.refresh_token }, ['role'])
     if (!user) {
       throw new ForbiddenException('Invalid refresh token.')
@@ -139,6 +139,7 @@ export class AuthService {
     if (isRefreshTokenMatching) {
       return {
         id: user.id,
+        username: user.username,
         email: user.email,
       }
     }
@@ -198,7 +199,7 @@ export class AuthService {
   }
 
   async getUserId(request: Request): Promise<string> {
-    const user = request.user as User
+    const user = request.user as Uporabnik
     return user.id
   }
 }

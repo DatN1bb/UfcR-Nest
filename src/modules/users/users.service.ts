@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { User } from 'entities/user.entity'
+import { Uporabnik } from 'entities/user.entity'
 import { PostgresErrorCode } from 'helpers/postgresErrorCode.enum'
 import logging from 'library/Logging'
 import { AbstractService } from 'modules/common/abstract.service'
@@ -11,14 +11,14 @@ import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 
 @Injectable()
-export class UsersService extends AbstractService<User> {
-  constructor(@InjectRepository(User) private readonly usersRepository: Repository<User>) {
+export class UsersService extends AbstractService<Uporabnik> {
+  constructor(@InjectRepository(Uporabnik) private readonly usersRepository: Repository<Uporabnik>) {
     super(usersRepository)
   }
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    const user = await this.FindBy({ email: createUserDto.email })
-    if (user) {
+  async create(createUserDto: CreateUserDto): Promise<Uporabnik> {
+    const uporabnik = await this.FindBy({ email: createUserDto.email })
+    if (uporabnik) {
       throw new BadRequestException('User with that email already exists.')
     }
     try {
@@ -30,8 +30,8 @@ export class UsersService extends AbstractService<User> {
     }
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    const user = (await this.FindById(id)) as User
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<Uporabnik> {
+    const user = (await this.FindById(id)) as Uporabnik
     const { email, password, confirm_password, role_id, ...data } = updateUserDto
     if (user.email !== email && email) {
       user.email = email
@@ -62,7 +62,7 @@ export class UsersService extends AbstractService<User> {
     }
   }
 
-  async updateUserImageId(id: string, avatar: string): Promise<User> {
+  async updateUserImageId(id: string, avatar: string): Promise<Uporabnik> {
     const user = await this.FindById(id)
     return this.update(user.id, { avatar })
   }

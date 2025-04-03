@@ -1,26 +1,23 @@
 import { Exclude } from 'class-transformer'
-import { Column, JoinColumn, ManyToOne } from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
 
 import { Base } from './base.entity'
 import { Role } from './role.entity'
 
-export class User extends Base {
+@Entity()
+export class Uporabnik extends Base {
+  @Column({ nullable: true })
+  username: string
+
   @Column({ unique: true })
   email: string
-
-  @Column({ nullable: true })
-  first_name: string
-
-  @Column({ nullable: true })
-  last_name: string
-
-  @Column({ nullable: true })
-  avatar: string
 
   @Column({ nullable: true })
   @Exclude()
   password: string
 
+  @Column({ nullable: true })
+  @Exclude()
   refresh_token?: string
 
   @ManyToOne(() => Role, { onDelete: 'SET NULL' })

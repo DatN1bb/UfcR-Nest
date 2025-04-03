@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { Role } from 'entities/role.entity'
-import { User } from 'entities/user.entity'
+import { Uporabnik } from 'entities/user.entity'
 import { AuthService } from 'modules/auth/auth.service'
 import { RolesService } from 'modules/roles/roles.service'
 import { UsersService } from 'modules/users/users.service'
@@ -22,7 +22,7 @@ export class PermissionsGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest()
     const userId = await this.authService.getUserId(request)
-    const user: User = await this.usersService.FindById(userId, ['role'])
+    const user: Uporabnik = await this.usersService.FindById(userId, ['role'])
     const role: Role = await this.rolesService.FindById(user.role.id, ['permissions'])
     if (request.method === 'GET') {
       return role.permissions.some((p) => p.name === `view_${access}` || p.name === `edit_${access}`)

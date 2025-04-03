@@ -3,10 +3,7 @@ import { Match } from 'decorators/match.decorator' // Ensure the correct path to
 
 export class RegisterUserDto {
   @IsOptional()
-  first_name?: string
-
-  @IsOptional()
-  last_name?: string
+  username?: string
 
   @IsNotEmpty()
   @IsEmail()

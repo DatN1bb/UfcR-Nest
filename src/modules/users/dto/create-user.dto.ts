@@ -5,11 +5,7 @@ import { Match } from 'decorators/match.decorator'
 export class CreateUserDto {
   @ApiProperty({ required: false })
   @IsOptional()
-  first_name?: string
-
-  @ApiProperty({ required: true })
-  @IsOptional()
-  last_name?: string
+  username?: string
 
   @ApiProperty({ required: true })
   @IsNotEmpty()

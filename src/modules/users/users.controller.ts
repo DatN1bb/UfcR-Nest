@@ -17,7 +17,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express'
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiTags } from '@nestjs/swagger'
 import { HasPermission } from 'decorators/has-permission.decorator'
-import { User } from 'entities/user.entity'
+import { Uporabnik } from 'entities/user.entity'
 import { isFIleExtensionSafe, removeFile, saveImageToStorage } from 'helpers/imageStorage'
 import { PaginatedResult } from 'interfaces/paginated-result.interface'
 import { join } from 'path'
@@ -37,13 +37,13 @@ export class UsersController {
   @Get()
   @HasPermission('users')
   @HttpCode(HttpStatus.OK)
-  async findAll(@Query('page') page: number): Promise<PaginatedResult<User>> {
+  async findAll(@Query('page') page: number): Promise<PaginatedResult<Uporabnik>> {
     return this.usersService.paginate(page, ['role'])
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async findOne(@Param('id') id: string): Promise<User> {
+  async findOne(@Param('id') id: string): Promise<Uporabnik> {
     return this.usersService.FindById(id)
   }
 
@@ -51,14 +51,14 @@ export class UsersController {
   @ApiBadRequestResponse({ description: 'Error for creating a new user.' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
+  async create(@Body() createUserDto: CreateUserDto): Promise<Uporabnik> {
     return this.usersService.create(createUserDto)
   }
 
   @Post('upload/:id')
   @UseInterceptors(FileInterceptor('avatar', saveImageToStorage))
   @HttpCode(HttpStatus.CREATED)
-  async upload(@UploadedFile() file: Express.Multer.File, @Param('id') id: string): Promise<User> {
+  async upload(@UploadedFile() file: Express.Multer.File, @Param('id') id: string): Promise<Uporabnik> {
     const filename = file?.filename
 
     if (!filename) throw new BadRequestException('File must be a png, jpg/jpeg')
@@ -74,13 +74,13 @@ export class UsersController {
 
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<User> {
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<Uporabnik> {
     return this.usersService.update(id, updateUserDto)
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  async remove(@Param('id') id: string): Promise<User> {
+  async remove(@Param('id') id: string): Promise<Uporabnik> {
     return this.usersService.remove(id)
   }
 }

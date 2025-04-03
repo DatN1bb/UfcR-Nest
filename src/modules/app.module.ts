@@ -3,7 +3,6 @@ import { ConfigModule } from '@nestjs/config'
 import { APP_GUARD } from '@nestjs/core'
 import { configValidationSchema } from 'config/schema.config'
 import { LoggerMiddleware } from 'middleware/logger.middleware'
-import { OrdersModule } from 'orders/orders.module'
 
 import { AuthModule } from './auth/auth.module'
 import { JwtAuthGuard } from './auth/guards/jwt.guard'
@@ -28,7 +27,6 @@ import { UsersModule } from './users/users.module'
     RolesModule,
     PermissionsModule,
     ProductsModule,
-    OrdersModule,
   ],
   controllers: [],
   providers: [
