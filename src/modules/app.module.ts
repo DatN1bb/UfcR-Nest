@@ -21,6 +21,7 @@ import { UsersModule } from './users/users.module'
       envFilePath: [`.env.${process.env.STAGE}`],
       validationSchema: configValidationSchema,
     }),
+    AuthModule,
     DatabaseModule,
     UsersModule,
     AuthModule,
