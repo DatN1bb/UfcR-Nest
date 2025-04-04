@@ -1,5 +1,5 @@
 import { Exclude, Expose } from 'class-transformer'
-import { Column, Entity, OneToMany } from 'typeorm'
+import { Column, Entity } from 'typeorm'
 
 import { Base } from './base.entity'
 

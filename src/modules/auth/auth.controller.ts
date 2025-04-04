@@ -17,7 +17,7 @@ import { Request, Response } from 'express'
 import { RequestWithUporabnik } from 'interfaces/auth.interface'
 
 import { AuthService } from './auth.service'
-import { RegisterUserDto } from './dto/reigster-user.dto'
+import { RegisterUporabnikDto } from './dto/reigster-user.dto'
 import { LocalAuthGuard } from './guards/local-auth.guard'
 
 @Controller('auth')
@@ -28,7 +28,7 @@ export class AuthController {
   @Public()
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
-  async register(@Body() body: RegisterUserDto): Promise<Uporabnik> {
+  async register(@Body() body: RegisterUporabnikDto): Promise<Uporabnik> {
     return this.authService.register(body)
   }
 
@@ -37,16 +37,16 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(@Req() req: RequestWithUporabnik, @Res({ passthrough: true }) res: Response): Promise<Uporabnik> {
-    const access_token = await this.authService.generateJwt(req.user)
+    const access_token = await this.authService.generateJwt(req.uporabnik)
     res.cookie('access_token', access_token, { httpOnly: true })
-    return req.user
+    return req.uporabnik
   }
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  async user(@Req() req: Request): Promise<Uporabnik> {
+  async uporabnik(@Req() req: Request): Promise<Uporabnik> {
     const cookie = req.cookies['access_token']
-    return this.authService.user(cookie)
+    return this.authService.uporabnik(cookie)
   }
   @Post('signout')
   @HttpCode(HttpStatus.OK)

@@ -4,12 +4,12 @@ import { PassportStrategy } from '@nestjs/passport'
 import { Uporabnik } from 'entities/user.entity'
 import { Request } from 'express'
 import { TokenPayload } from 'interfaces/auth.interface'
-import { UsersService } from 'modules/users/users.service'
+import { UporabnikiService } from 'modules/users/users.service'
 import { ExtractJwt, Strategy } from 'passport-jwt'
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
-  constructor(private usersService: UsersService, private configService: ConfigService) {
+  constructor(private uporabnikiService: UporabnikiService, private configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {
@@ -20,6 +20,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     })
   }
   async validate(payload: TokenPayload): Promise<Uporabnik> {
-    return this.usersService.FindById(payload.sub)
+    return this.uporabnikiService.FindById(payload.sub)
   }
 }

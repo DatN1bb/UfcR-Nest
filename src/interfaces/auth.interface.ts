@@ -8,7 +8,7 @@ export interface TokenPayload {
 }
 
 export interface RequestWithUporabnik extends Request {
-  user: Uporabnik
+  uporabnik: Uporabnik
 }
 
 export enum JwtType {

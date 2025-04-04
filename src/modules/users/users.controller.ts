@@ -22,37 +22,37 @@ import { isFIleExtensionSafe, removeFile, saveImageToStorage } from 'helpers/ima
 import { PaginatedResult } from 'interfaces/paginated-result.interface'
 import { join } from 'path'
 
-import { CreateUserDto } from './dto/create-user.dto'
-import { UpdateUserDto } from './dto/update-user.dto'
-import { UsersService } from './users.service'
+import { CreateUporabnikDto } from './dto/create-user.dto'
+import { UpdateUporabnikDto } from './dto/update-user.dto'
+import { UporabnikiService } from './users.service'
 
-@ApiTags('users')
-@Controller('users')
+@ApiTags('Uporabniki')
+@Controller('Uporabniki')
 @UseInterceptors(ClassSerializerInterceptor)
-export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+export class UporabnikiController {
+  constructor(private readonly uporabnikiService: UporabnikiService) {}
 
-  @ApiCreatedResponse({ description: 'List all users.' })
-  @ApiBadRequestResponse({ description: 'Error for list of users.' })
+  @ApiCreatedResponse({ description: 'List all uporabniki.' })
+  @ApiBadRequestResponse({ description: 'Error for list of uporabniki.' })
   @Get()
-  @HasPermission('users')
+  @HasPermission('uporabniki')
   @HttpCode(HttpStatus.OK)
   async findAll(@Query('page') page: number): Promise<PaginatedResult<Uporabnik>> {
-    return this.usersService.paginate(page, ['role'])
+    return this.uporabnikiService.paginate(page, ['role'])
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   async findOne(@Param('id') id: string): Promise<Uporabnik> {
-    return this.usersService.FindById(id)
+    return this.uporabnikiService.FindById(id)
   }
 
-  @ApiCreatedResponse({ description: 'Creates new user.' })
-  @ApiBadRequestResponse({ description: 'Error for creating a new user.' })
+  @ApiCreatedResponse({ description: 'Creates new Uporabnik.' })
+  @ApiBadRequestResponse({ description: 'Error for creating a new Uporabnik.' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createUserDto: CreateUserDto): Promise<Uporabnik> {
-    return this.usersService.create(createUserDto)
+  async create(@Body() createUporabnikDto: CreateUporabnikDto): Promise<Uporabnik> {
+    return this.uporabnikiService.create(createUporabnikDto)
   }
 
   @Post('upload/:id')
@@ -66,7 +66,7 @@ export class UsersController {
     const imagesFolderPath = join(process.cwd(), 'files')
     const fullImagePath = join(imagesFolderPath + '/' + file.filename)
     if (await isFIleExtensionSafe(fullImagePath)) {
-      return this.usersService.updateUserImageId(id, filename)
+      return this.uporabnikiService.updateUporabnikImageId(id, filename)
     }
     removeFile(fullImagePath)
     throw new BadRequestException('File content does not match extension!')
@@ -74,13 +74,13 @@ export class UsersController {
 
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<Uporabnik> {
-    return this.usersService.update(id, updateUserDto)
+  async update(@Param('id') id: string, @Body() updateUporabnikDto: UpdateUporabnikDto): Promise<Uporabnik> {
+    return this.uporabnikiService.update(id, updateUporabnikDto)
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   async remove(@Param('id') id: string): Promise<Uporabnik> {
-    return this.usersService.remove(id)
+    return this.uporabnikiService.remove(id)
   }
 }

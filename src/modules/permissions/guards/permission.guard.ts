@@ -4,14 +4,14 @@ import { Role } from 'entities/role.entity'
 import { Uporabnik } from 'entities/user.entity'
 import { AuthService } from 'modules/auth/auth.service'
 import { RolesService } from 'modules/roles/roles.service'
-import { UsersService } from 'modules/users/users.service'
+import { UporabnikiService } from 'modules/users/users.service'
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
     private authService: AuthService,
-    private usersService: UsersService,
+    private uporabnikiService: UporabnikiService,
     private rolesService: RolesService,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -21,9 +21,9 @@ export class PermissionsGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest()
-    const userId = await this.authService.getUserId(request)
-    const user: Uporabnik = await this.usersService.FindById(userId, ['role'])
-    const role: Role = await this.rolesService.FindById(user.role.id, ['permissions'])
+    const uporabnikId = await this.authService.getUporabnikId(request)
+    const uporabnik: Uporabnik = await this.uporabnikiService.FindById(uporabnikId, ['role'])
+    const role: Role = await this.rolesService.FindById(uporabnik.role.id, ['permissions'])
     if (request.method === 'GET') {
       return role.permissions.some((p) => p.name === `view_${access}` || p.name === `edit_${access}`)
     }
