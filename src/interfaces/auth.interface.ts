@@ -1,4 +1,4 @@
-import { Uporabnik } from 'entities/user.entity'
+import { User } from 'entities/user.entity'
 import { Request } from 'express'
 
 export interface TokenPayload {
@@ -7,8 +7,8 @@ export interface TokenPayload {
   type: JwtType
 }
 
-export interface RequestWithUporabnik extends Request {
-  uporabnik: Uporabnik
+export interface RequestWithUser extends Request {
+  user: User
 }
 
 export enum JwtType {

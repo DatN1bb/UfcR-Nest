@@ -17,48 +17,48 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express'
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiTags } from '@nestjs/swagger'
 import { HasPermission } from 'decorators/has-permission.decorator'
-import { Uporabnik } from 'entities/user.entity'
+import { User } from 'entities/user.entity'
 import { isFIleExtensionSafe, removeFile, saveImageToStorage } from 'helpers/imageStorage'
 import { PaginatedResult } from 'interfaces/paginated-result.interface'
 import { join } from 'path'
 
-import { CreateUporabnikDto } from './dto/create-user.dto'
-import { UpdateUporabnikDto } from './dto/update-user.dto'
-import { UporabnikiService } from './users.service'
+import { CreateUserDto } from './dto/create-user.dto'
+import { UpdateUserDto } from './dto/update-user.dto'
+import { UsersService } from './users.service'
 
-@ApiTags('Uporabniki')
-@Controller('Uporabniki')
+@ApiTags('Users')
+@Controller('Users')
 @UseInterceptors(ClassSerializerInterceptor)
-export class UporabnikiController {
-  constructor(private readonly uporabnikiService: UporabnikiService) {}
+export class UsersController {
+  constructor(private readonly UsersService: UsersService) {}
 
-  @ApiCreatedResponse({ description: 'List all uporabniki.' })
-  @ApiBadRequestResponse({ description: 'Error for list of uporabniki.' })
+  @ApiCreatedResponse({ description: 'List all Users.' })
+  @ApiBadRequestResponse({ description: 'Error for list of Users.' })
   @Get()
-  @HasPermission('uporabniki')
+  @HasPermission('Users')
   @HttpCode(HttpStatus.OK)
-  async findAll(@Query('page') page: number): Promise<PaginatedResult<Uporabnik>> {
-    return this.uporabnikiService.paginate(page, ['role'])
+  async findAll(@Query('page') page: number): Promise<PaginatedResult<User>> {
+    return this.UsersService.paginate(page, ['role'])
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async findOne(@Param('id') id: string): Promise<Uporabnik> {
-    return this.uporabnikiService.FindById(id)
+  async findOne(@Param('id') id: string): Promise<User> {
+    return this.UsersService.FindById(id)
   }
 
-  @ApiCreatedResponse({ description: 'Creates new Uporabnik.' })
-  @ApiBadRequestResponse({ description: 'Error for creating a new Uporabnik.' })
+  @ApiCreatedResponse({ description: 'Creates new User.' })
+  @ApiBadRequestResponse({ description: 'Error for creating a new User.' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createUporabnikDto: CreateUporabnikDto): Promise<Uporabnik> {
-    return this.uporabnikiService.create(createUporabnikDto)
+  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return this.UsersService.create(createUserDto)
   }
 
   @Post('upload/:id')
   @UseInterceptors(FileInterceptor('avatar', saveImageToStorage))
   @HttpCode(HttpStatus.CREATED)
-  async upload(@UploadedFile() file: Express.Multer.File, @Param('id') id: string): Promise<Uporabnik> {
+  async upload(@UploadedFile() file: Express.Multer.File, @Param('id') id: string): Promise<User> {
     const filename = file?.filename
 
     if (!filename) throw new BadRequestException('File must be a png, jpg/jpeg')
@@ -66,7 +66,7 @@ export class UporabnikiController {
     const imagesFolderPath = join(process.cwd(), 'files')
     const fullImagePath = join(imagesFolderPath + '/' + file.filename)
     if (await isFIleExtensionSafe(fullImagePath)) {
-      return this.uporabnikiService.updateUporabnikImageId(id, filename)
+      return this.UsersService.updateUsersmageId(id, filename)
     }
     removeFile(fullImagePath)
     throw new BadRequestException('File content does not match extension!')
@@ -74,13 +74,13 @@ export class UporabnikiController {
 
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
-  async update(@Param('id') id: string, @Body() updateUporabnikDto: UpdateUporabnikDto): Promise<Uporabnik> {
-    return this.uporabnikiService.update(id, updateUporabnikDto)
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<User> {
+    return this.UsersService.update(id, updateUserDto)
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  async remove(@Param('id') id: string): Promise<Uporabnik> {
-    return this.uporabnikiService.remove(id)
+  async remove(@Param('id') id: string): Promise<User> {
+    return this.UsersService.remove(id)
   }
 }

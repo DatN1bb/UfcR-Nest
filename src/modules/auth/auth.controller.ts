@@ -12,12 +12,12 @@ import {
   UseInterceptors,
 } from '@nestjs/common'
 import { Public } from 'decorators/public.decorator'
-import { Uporabnik } from 'entities/user.entity'
+import { User } from 'entities/user.entity'
 import { Request, Response } from 'express'
-import { RequestWithUporabnik } from 'interfaces/auth.interface'
+import { RequestWithUser } from 'interfaces/auth.interface'
 
 import { AuthService } from './auth.service'
-import { RegisterUporabnikDto } from './dto/reigster-user.dto'
+import { RegisterUserDto } from './dto/reigster-user.dto'
 import { LocalAuthGuard } from './guards/local-auth.guard'
 
 @Controller('auth')
@@ -28,7 +28,7 @@ export class AuthController {
   @Public()
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
-  async register(@Body() body: RegisterUporabnikDto): Promise<Uporabnik> {
+  async register(@Body() body: RegisterUserDto): Promise<User> {
     return this.authService.register(body)
   }
 
@@ -36,17 +36,17 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(@Req() req: RequestWithUporabnik, @Res({ passthrough: true }) res: Response): Promise<Uporabnik> {
-    const access_token = await this.authService.generateJwt(req.uporabnik)
+  async login(@Req() req: RequestWithUser, @Res({ passthrough: true }) res: Response): Promise<User> {
+    const access_token = await this.authService.generateJwt(req.user)
     res.cookie('access_token', access_token, { httpOnly: true })
-    return req.uporabnik
+    return req.user
   }
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  async uporabnik(@Req() req: Request): Promise<Uporabnik> {
+  async User(@Req() req: Request): Promise<User> {
     const cookie = req.cookies['access_token']
-    return this.authService.uporabnik(cookie)
+    return this.authService.User(cookie)
   }
   @Post('signout')
   @HttpCode(HttpStatus.OK)

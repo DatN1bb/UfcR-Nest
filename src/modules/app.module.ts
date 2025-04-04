@@ -11,7 +11,7 @@ import { PermissionsGuard } from './permissions/guards/permission.guard'
 import { PermissionsModule } from './permissions/permissions.module'
 import { ProductsModule } from './products/products.module'
 import { RolesModule } from './roles/roles.module'
-import { UporabnikiModule } from './users/users.module'
+import { UseriModule } from './users/users.module'
 
 @Module({
   imports: [
@@ -22,7 +22,7 @@ import { UporabnikiModule } from './users/users.module'
     }),
     AuthModule,
     DatabaseModule,
-    UporabnikiModule,
+    UsersModule,
     AuthModule,
     RolesModule,
     PermissionsModule,

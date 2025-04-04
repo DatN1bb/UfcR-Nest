@@ -5,7 +5,7 @@ import { Base } from './base.entity'
 import { Role } from './role.entity'
 
 @Entity()
-export class Uporabnik extends Base {
+export class User extends Base {
   @Column({ nullable: true })
   username: string
 

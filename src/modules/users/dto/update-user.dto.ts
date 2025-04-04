@@ -1,7 +1,7 @@
 import { IsEmail, IsOptional, Matches, ValidateIf } from 'class-validator'
 import { Match } from 'decorators/match.decorator'
 
-export class UpdateUporabnikDto {
+export class UpdateUserDto {
   @IsOptional()
   username?: string
 
@@ -28,6 +28,6 @@ export class UpdateUporabnikDto {
 
   @ValidateIf((o) => typeof o.confirm_password === 'string' && o.confirm_password.length > 0)
   @IsOptional()
-  @Match(UpdateUporabnikDto, (field) => field.password, { message: 'Passwords do not match.' })
+  @Match(UpdateUserDto, (field) => field.password, { message: 'Passwords do not match.' })
   confirm_password?: string
 }

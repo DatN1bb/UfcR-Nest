@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
-import { Uporabnik } from 'entities/user.entity'
+import { User } from 'entities/user.entity'
 import { Request } from 'express'
 import { TokenPayload } from 'interfaces/auth.interface'
-import { UporabnikiService } from 'modules/users/users.service'
+import { UsersService } from 'modules/users/users.service'
 import { ExtractJwt, Strategy } from 'passport-jwt'
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
-  constructor(private uporabnikiService: UporabnikiService, private configService: ConfigService) {
+  constructor(private UsersService: UsersService, private configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {
@@ -19,7 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       secretOrKey: configService.get<string>('JWT_SECRET'),
     })
   }
-  async validate(payload: TokenPayload): Promise<Uporabnik> {
-    return this.uporabnikiService.FindById(payload.sub)
+  async validate(payload: TokenPayload): Promise<User> {
+    return this.UsersService.FindById(payload.sub)
   }
 }
