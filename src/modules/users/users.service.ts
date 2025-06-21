@@ -17,14 +17,13 @@ export class UsersService extends AbstractService<User> {
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const User = await this.FindBy({ email: createUserDto.email })
-    if (User) {
-      throw new BadRequestException('Userwith that email already exists.')
+    const existingUser = await this.FindBy({ email: createUserDto.email })
+    if (existingUser) {
+      throw new BadRequestException('User with that email already exists.')
     }
     try {
       const newUser = this.UsersRepository.create({
         ...createUserDto,
-        role: { id: createUserDto.role_id },
       })
       return this.UsersRepository.save(newUser)
     } catch (error) {
@@ -49,23 +48,22 @@ export class UsersService extends AbstractService<User> {
       user.password = await hash(password)
     }
     if (role_id) {
-      user.role = { ...user.role, id: role_id }
     }
     try {
       Object.entries(data).map((entry) => {
-        User[entry[0]] = entry[1]
+        user[entry[0]] = entry[1]
       })
       return this.UsersRepository.save(user)
     } catch (error) {
       logging.error(error)
       if (error?.code === PostgresErrorCode.UniqueViolation) {
-        throw new BadRequestException('Userwith that email already exists.')
+        throw new BadRequestException('User with that email already exists.')
       }
       throw new InternalServerErrorException('Something went wrong while updating the User')
     }
   }
 
-  async updateUsersmageId(id: string, avatar: string): Promise<User> {
+  async updateUserImageId(id: string, avatar: string): Promise<User> {
     const user = await this.FindById(id)
     return this.update(user.id, { avatar })
   }

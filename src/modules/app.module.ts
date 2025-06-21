@@ -8,10 +8,8 @@ import { AuthModule } from './auth/auth.module'
 import { JwtAuthGuard } from './auth/guards/jwt.guard'
 import { DatabaseModule } from './database/database.module'
 import { PermissionsGuard } from './permissions/guards/permission.guard'
-import { PermissionsModule } from './permissions/permissions.module'
 import { ProductsModule } from './products/products.module'
-import { RolesModule } from './roles/roles.module'
-import { UseriModule } from './users/users.module'
+import { UsersModule } from './users/users.module'
 
 @Module({
   imports: [
@@ -20,12 +18,9 @@ import { UseriModule } from './users/users.module'
       envFilePath: [`.env.${process.env.STAGE}`],
       validationSchema: configValidationSchema,
     }),
-    AuthModule,
     DatabaseModule,
     UsersModule,
     AuthModule,
-    RolesModule,
-    PermissionsModule,
     ProductsModule,
   ],
   controllers: [],

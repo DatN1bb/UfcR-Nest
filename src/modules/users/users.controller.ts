@@ -66,7 +66,7 @@ export class UsersController {
     const imagesFolderPath = join(process.cwd(), 'files')
     const fullImagePath = join(imagesFolderPath + '/' + file.filename)
     if (await isFIleExtensionSafe(fullImagePath)) {
-      return this.UsersService.updateUsersmageId(id, filename)
+      return this.UsersService.updateUserImageId(id, filename)
     }
     removeFile(fullImagePath)
     throw new BadRequestException('File content does not match extension!')

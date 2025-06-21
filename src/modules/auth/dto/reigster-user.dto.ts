@@ -13,7 +13,6 @@ export class RegisterUserDto {
   @Matches(/^(?=.*\d)(?=.*[a-zA-Z]).{6,}$/, {
     message: 'Password must have at least one number, one letter, and be longer than 5 characters.',
   })
-  @IsEmpty()
   password?: string
 
   @IsNotEmpty()

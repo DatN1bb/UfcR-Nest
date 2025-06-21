@@ -21,7 +21,8 @@ export const ORMConfig = async (configService: ConfigService): Promise<Connectio
     username,
     password,
     database,
-    entities: ['dist/**/*.entity.ts'],
+    entities: [],
+    autoLoadEntities: true,
     synchronize: true, //only in development
     ssl: false,
   }

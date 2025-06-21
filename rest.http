@@ -20,15 +20,15 @@ Content-Type: application/json
   	"password": "Nick123!"
 }
 
-### POST /users/:id
+### POST /uporabnik/:id
 POST http://localhost:8080/users/05f72cc-285a-43b6-b434-d8d35b041265 HTTP/1.1
 Content-Type: application/json
 
 {
-  	"role_id": "Nick@gmail.com",
+  	"uporabnik_id": "Nick@gmail.com",
 }
 
-### GET /users
+### GET /uporabnik
 GET http://localhost:8080/users HTTP/1.1
 
 ### GET /permissions Send Request
