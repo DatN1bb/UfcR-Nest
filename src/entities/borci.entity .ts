@@ -3,16 +3,22 @@ import { Column, Entity } from 'typeorm'
 import { Base } from './base.entity'
 
 @Entity()
-export class Product extends Base {
+export class Borci extends Base {
   @Column()
-  title: string
+  ime: string
 
   @Column()
-  description: string
+  record: number
 
   @Column({ nullable: true })
-  image: string
+  starost: number
 
   @Column()
-  price: number
+  velikost: number
+
+  @Column()
+  teza: number
+
+  @Column()
+  reach: number
 }

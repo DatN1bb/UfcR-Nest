@@ -8,20 +8,21 @@ import { AuthModule } from './auth/auth.module'
 import { JwtAuthGuard } from './auth/guards/jwt.guard'
 import { DatabaseModule } from './database/database.module'
 import { PermissionsGuard } from './permissions/guards/permission.guard'
-import { ProductsModule } from './products/products.module'
-import { UsersModule } from './users/users.module'
+import { BorciModule } from './products/borci.module'
+import { UporabnikModule } from './users/uporabnik.module'
+import { Match_upsModule } from './roles/dto/match_ups.module'
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [`.env.${process.env.STAGE}`],
-      validationSchema: configValidationSchema,
+      envFilePath: '.env.development',
     }),
     DatabaseModule,
-    UsersModule,
+    UporabnikModule,
     AuthModule,
-    ProductsModule,
+    BorciModule,
+    Match_upsModule,
   ],
   controllers: [],
   providers: [

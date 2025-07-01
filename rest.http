@@ -6,7 +6,8 @@ POST http://localhost:8080/auth/register HTTP/1.1
 Content-Type: application/json
 
 {
-  	"email": "Nick@gmail.com",
+	"username": "Nick",
+  	"email": "Nick123@gmail.com",
   	"password": "Nick123!",
   	"confirm_password": "Nick123!"
 }
@@ -50,13 +51,17 @@ GET http://localhost:8080/roles HTTP/1.1
 Send Request
 GET http://localhost:8080/roles/0a1966a3-c942-4d06-b65e-7b1ec HTTP/1.1
 
-### POST /roles
-POST http://localhost:8080/roles HTTP/1.1
+### POST /borci
+POST http://localhost:8080/borci HTTP/1.1
 Content-Type: application/json
 
 {
-	"name": "Admin",
-	"permissions": ["85977cff-72c8-457a-8e09-a3f488c8df55"]
+    "ime": "Georges St-Pierre",
+    "record": "26-2-0",
+    "starost": "44",
+    "velikost": "180",
+    "teza": "83",
+    "reach": "193"
 }
 
 ### PATCH /roles/:id
